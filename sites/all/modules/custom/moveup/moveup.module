@@ -1,0 +1,77 @@
+<?php
+
+function moveup_form_alter(&$form, $form_state, $form_id)
+{
+	$form_type = $form['type']['#value'];	
+	
+	if($form_type=='jobseeker')
+	{
+		
+		if ($form['nid']["#value"] == NULL)
+		{
+			unset($form['title']);
+			unset($form['field_jobseeker_user']);
+			unset($form['field_createddate']);
+			unset($form['field_active']);
+		}
+		
+		
+		
+		$form['actions']['submit'] = array(
+			'#type' => 'submit',
+			'#access' => !variable_get('node_preview', 0) || (!form_get_errors() && isset($form_state['node_preview'])),
+			'#value' => t('Create My Account'),
+			'#weight' => 5,
+			'#submit' => array('jobseeker_moveup_submit'),
+		);
+	}
+}
+
+
+function jobseeker_moveup_submit($form, &$form_state)
+{
+	node_form_submit($form, $form_state);	
+	
+	if ($form_state['values']['nid'] != NULL)
+	{				
+		$mynid = $form_state['values']['nid'];		
+		
+		$node = node_load($mynid);
+		
+		
+		
+		$node->title = $mynid . ' - ' . $node->field_first_name[$node->language][0]['value'] . ' ' . $node->field_last_name['und'][0]['value'];
+		/*$node->field_active[$node->language][0]['value'] = 1;	*/	
+		$node->field_createddate[$node->language][0] = array(
+			'value' => format_date(strtotime('now'), 'custom', 'Y-m-d H:i:s', 'UTC'),
+			'timezone' => 'UTC',  
+			'timezone_db' => 'UTC',
+		);
+		
+		$newUser = array(
+			'name' => $node->title,
+			'pass' => '123456',
+			'mail' => $node->field_email[$node->language][0]['email'],
+			'status' => 1, 
+			'init' => $node->field_email[$node->language][0]['email'],
+			'roles' => array('4' => 'jobseeker'),
+		);      
+		$newUser = user_save(null, $newUser);	
+		
+		$node->field_jobseeker_user = array($node->language => array(0 => array('target_id' => $newUser->uid)));
+		
+		node_save($node);
+		
+		var_dump($node->field_jobseeker_user);
+		exit();
+		
+		
+		
+		drupal_goto('/');
+		
+	}
+}
+
+
+
+?>

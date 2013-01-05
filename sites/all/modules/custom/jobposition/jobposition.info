@@ -1,0 +1,5 @@
+name = Job Position
+description = functionality for job position.
+package = moveup
+core = 7.x
+version = 7.x-0.1-dev

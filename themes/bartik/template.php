@@ -112,6 +112,12 @@ function bartik_preprocess_node(&$variables) {
   if ($variables['view_mode'] == 'full' && node_is_page($variables['node'])) {
     $variables['classes_array'][] = 'node-full';
   }
+
+
+  if (!empty($variables['node']) && in_array($variables['node']->type, array('jobapplication'))) {
+$variables['title'] = NULL;
+}
+
 }
 
 /**
@@ -153,4 +159,12 @@ function bartik_field__taxonomy_term_reference($variables) {
   $output = '<div class="' . $variables['classes'] . (!in_array('clearfix', $variables['classes_array']) ? ' clearfix' : '') . '"' . $variables['attributes'] .'>' . $output . '</div>';
 
   return $output;
+}
+
+
+
+function bartik_preprocess_page(&$vars) {
+if (!empty($vars['node']) && in_array($vars['node']->type, array('positions'))) {
+$vars['title'] = $vars['node']->title;
+}
 }

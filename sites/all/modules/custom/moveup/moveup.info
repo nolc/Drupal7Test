@@ -1,0 +1,7 @@
+name = MoveUp Module
+description = Main module for the site
+core = 7.x
+
+;scripts =
+;stylesheets =
+

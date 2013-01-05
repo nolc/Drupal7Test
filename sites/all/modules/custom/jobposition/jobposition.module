@@ -1,0 +1,64 @@
+<?php
+/**
+ * @file
+ * Custom functionality for a wind farm database.
+ */
+
+/**
+ * Implements hook_node_view().
+ */
+function jobposition_node_view($node, $view_mode, $langcode) {
+
+  if ($node->type == 'positions' && $view_mode == 'full') {
+
+
+
+      if (!function_exists('node_add')) {
+        module_load_include('inc', 'node', 'node.pages');
+      }
+
+      $positions = node_add('jobapplication');
+
+      //$positions['#node']->title = '';
+
+
+
+        //print '<pre>';
+       //print_r($positions);
+       //print '<pre>';
+
+      $node->content['my_additional_field'] = array(
+        '#markup' => drupal_render($positions),
+        '#weight' => 10,
+      );
+
+
+  }
+
+
+}
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function jobposition_form_alter(&$form, &$form_state, $form_id) {
+
+  if ($form_id == 'jobapplication_node_form') {
+
+    dpm($form);
+     $form['actions']['submit']['#value'] = 'aplicar ahora';
+
+     $form['title']['#type'] = 'hidden';
+
+     //print '<pre>';
+     //print_r($form);
+     //print '<pre>';
+    // exit();
+
+  }
+
+
+
+
+}
