@@ -166,5 +166,6 @@ function bartik_field__taxonomy_term_reference($variables) {
 function bartik_preprocess_page(&$vars) {
 if (!empty($vars['node']) && in_array($vars['node']->type, array('positions'))) {
 $vars['title'] = $vars['node']->title;
+  drupal_set_title( $vars['node']->title);
 }
 }
